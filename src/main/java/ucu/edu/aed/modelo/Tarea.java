@@ -27,7 +27,7 @@ public class Tarea implements Comparable<Tarea>{
     private int id;
     public String descripcion;
     public int criticidad;
-    public int contador = 0;
+    public static int contador = 0;
 
     // TODO: definir constructor(es) y validaciones.
     public Tarea(String unaDescripcion, int unaCriticidad){
