@@ -39,7 +39,6 @@ public class Main {
         while (i < 120) {
             sistema.procesarTarea();
             i++;
-
         }
         System.out.println(sistema.getHistorial().cantidadNodos() + " " + sistema.procesadas.tamaño());
 
