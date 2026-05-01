@@ -90,7 +90,7 @@ public class Main {
         try (BufferedWriter salida = new BufferedWriter(new FileWriter(path))){
             gestion.getHistorial().preOrder(tarea -> {
                 try {
-                    salida.write(tarea.getId());
+                    salida.write(Integer.toString(tarea.getId()));
                     salida.newLine();
                 } catch (IOException e) {
                     e.printStackTrace();
