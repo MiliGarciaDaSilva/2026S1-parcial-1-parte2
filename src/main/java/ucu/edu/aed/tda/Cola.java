@@ -1,6 +1,4 @@
-package ucu.edu.aed.tda.implementaciones;
-
-import ucu.edu.aed.tda.interfaces.TDACola;
+package ucu.edu.aed.tda;
 
 public class Cola<T> extends ListaEnlazada<T> implements TDACola<T> {
 

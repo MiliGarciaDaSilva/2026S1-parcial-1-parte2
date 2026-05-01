@@ -1,8 +1,6 @@
-package ucu.edu.aed.tda.implementaciones;
+package ucu.edu.aed.tda;
 
 import java.util.function.Consumer;
-
-import ucu.edu.aed.tda.interfaces.TDAElemento;
 
 /**
  * Implementación recursiva de un nodo de árbol AVL (auto-balanceado).

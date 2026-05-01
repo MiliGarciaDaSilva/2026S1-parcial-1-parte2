@@ -1,9 +1,7 @@
-package ucu.edu.aed.tda.implementaciones;
+package ucu.edu.aed.tda;
 
 import java.util.Comparator;
 import java.util.function.Predicate;
-
-import ucu.edu.aed.tda.interfaces.TDALista;
 
 public class ListaEnlazada<T> implements TDALista<T> {
 

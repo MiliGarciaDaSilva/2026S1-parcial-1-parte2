@@ -1,4 +1,4 @@
-package ucu.edu.aed.tda.implementaciones;
+package ucu.edu.aed.tda;
 
 public class NodoPrioridad<T> {
     private T dato;

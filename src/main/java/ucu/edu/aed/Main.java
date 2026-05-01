@@ -1,9 +1,13 @@
 package ucu.edu.aed;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
+import ucu.edu.aed.modelo.Tarea;
+import ucu.edu.aed.sistema.GestionTareas;
 import ucu.edu.aed.sistema.SistemaGestion;
 
 /**
@@ -22,12 +26,25 @@ import ucu.edu.aed.sistema.SistemaGestion;
 public class Main {
 
     public static void main(String[] args) {
-        String archivo = args.length > 0 ? args[0] : "naves.txt";
 
         // TODO: instanciar tu implementación de SistemaGestion (la clase que vos crees).
-        SistemaGestion sistema = null;
+        GestionTareas sistema = new GestionTareas();
 
-        cargarTareas(sistema, archivo);
+
+        cargarTareas(sistema, "naves.txt");
+
+        System.out.println(sistema.cantidad() + "  " + sistema.espera.tamaño());
+
+        int i = 0;
+        while (i < 120) {
+            sistema.procesarTarea();
+            i++;
+
+        }
+        System.out.println(sistema.getHistorial().cantidadNodos() + " " + sistema.procesadas.tamaño());
+
+        
+        escribirTxt("historial.txt", sistema);
 
         // TODO: procesar todas las tareas hasta vaciar las colas.
         //       Recordá que pueden quedar tareas en espera tras la carga inicial.
@@ -46,7 +63,7 @@ public class Main {
      * @param sistema sistema de gestión sobre el que registrar las tareas
      * @param archivo ruta del archivo a leer
      */
-    private static void cargarTareas(SistemaGestion sistema, String archivo) {
+    private static void cargarTareas(GestionTareas sistema, String archivo) {
         try (BufferedReader br = new BufferedReader(new FileReader("naves.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
@@ -55,17 +72,35 @@ public class Main {
                 String[] partes = linea.split(";");
                 if (partes.length < 3) continue;
                 try {
-                    int id = Integer.parseInt(partes[0].trim());
                     String descripcion = partes[1].trim();
                     int criticidad = Integer.parseInt(partes[2].trim());
                     // TODO: construir una Tarea con (id, descripcion, criticidad)
                     //       y llamar a sistema.recibirTarea(tarea).
+                    Tarea tarea = new Tarea(descripcion, criticidad);
+                    sistema.recibirTarea(tarea);
                 } catch (IllegalArgumentException ex) {
                     System.err.println("Línea inválida: " + linea);
                 }
             }
         } catch (IOException e) {
             System.err.println("No se pudo leer " + archivo + ": " + e.getMessage());
+        }
+    }
+
+    public static void escribirTxt(String path, GestionTareas gestion){
+        try (BufferedWriter salida = new BufferedWriter(new FileWriter(path))){
+            gestion.getHistorial().preOrder(tarea -> {
+                try {
+                    salida.write(tarea.getId());
+                    salida.newLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            salida.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

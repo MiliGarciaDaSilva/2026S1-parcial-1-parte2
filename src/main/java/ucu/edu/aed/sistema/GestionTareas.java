@@ -1,10 +1,10 @@
 package ucu.edu.aed.sistema;
 
-import java.util.ArrayList;
 
-import ucu.edu.aed.modelo.Cola;
+
 import ucu.edu.aed.modelo.Tarea;
 import ucu.edu.aed.tda.AVLArbol;
+import ucu.edu.aed.tda.Cola;
 
 public class GestionTareas implements SistemaGestion{
 //  public ArrayList<Cola<Tarea>> pendientes;
@@ -35,14 +35,12 @@ public class GestionTareas implements SistemaGestion{
     if (tarea == null) {
       return false;
     }
-    
-    boolean agarroUltimo = true;
-    while (agarroUltimo && !espera.esVacio()) {
-      recibirTarea(espera.quitaDeCola());
-      agarroUltimo = false;
-    }
-    
+
     if(this.cantidad() < 25){
+      if (!espera.esVacio()) {
+        intentarIngresar(espera.quitaDeCola());
+        return true;
+      }
       intentarIngresar(tarea);
     }
     else{
@@ -69,7 +67,7 @@ public class GestionTareas implements SistemaGestion{
 
     if (tarea.getCriticidad() < 3 ){
       if ((criticas1.tamaño() + criticas2.tamaño())< 10) {
-        if (tarea.getCriticidad()==1) {
+        if (tarea.getCriticidad() == 1) {
           criticas1.agregar(tarea);
         }else{
           criticas2.agregar(tarea);
@@ -83,35 +81,51 @@ public class GestionTareas implements SistemaGestion{
     }
   }
 
-  private int cantidad(){
+  public int cantidad(){
     return criticas1.tamaño() + criticas2.tamaño() + comunes.tamaño();
   }
 
   @Override
   public Tarea procesarTarea() {
+
     if (!criticas1.esVacio()) {
       Tarea tarea = criticas1.quitaDeCola();
       this.actualizarHistorial(tarea);
+      
+      if (!espera.esVacio()) {
+        intentarIngresar(espera.quitaDeCola());
+      }
+      
       return tarea;
-    }
-    if (!criticas2.esVacio()) {
+
+    }else if (!criticas2.esVacio()) {
       Tarea tarea = criticas2.quitaDeCola();
       this.actualizarHistorial(tarea);
+      
+      if (!espera.esVacio()) {
+        intentarIngresar(espera.quitaDeCola());
+      }
+      
       return tarea;
-    }
-    if (!comunes.esVacio()) {
+
+    }else if (!comunes.esVacio()) {
       Tarea tarea = comunes.quitaDeCola();
       this.actualizarHistorial(tarea);
+      
+      if (!espera.esVacio()) {
+        intentarIngresar(espera.quitaDeCola());
+      }
+      
       return tarea;
+
     }
+
     return null;
   }
 
   private void actualizarHistorial(Tarea tarea){
-    if (procesadas.tamaño() < 74) {
-      procesadas.agregar(tarea);
-    }else{
-      procesadas.agregar(tarea);
+    procesadas.agregar(tarea);
+    if (procesadas.tamaño() >= 75) {
       while (!procesadas.esVacio()) {
         historial.insertar(procesadas.quitaDeCola());
       }
@@ -144,8 +158,20 @@ public class GestionTareas implements SistemaGestion{
       if (cola.obtener(i).getId() == id) {
         return (Tarea) cola.obtener(i);
       }
+      i++;
     }
     return null;
   }
   
+  public AVLArbol<Tarea> getHistorial(){
+    return this.historial;
+  }
+
+  public Cola<Tarea> getCriticas1(){
+    return this.criticas1;
+  }
+  
+  public Cola<Tarea> getCriticas2(){
+    return this.criticas2;
+  }
 }
